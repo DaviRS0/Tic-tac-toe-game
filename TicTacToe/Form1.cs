@@ -12,7 +12,7 @@ namespace TicTacToe
         public Form1()
         {
             InitializeComponent();
-            this.Text = "Group#_LastName1_LastName2";
+            this.Text = "Group18_Sobral_Ajibola";
             comboBoxGridSize.SelectedIndex = 0; // Set default grid size to 3x3
             InitializeGame();
         }
@@ -74,21 +74,24 @@ namespace TicTacToe
                 pictureBox.Tag = "Player2"; // Assign Player 2 tag
             }
 
+            // Increment the rounds counter
+            rounds++;
+
             // Check for winner or draw
             if (CheckForWinner())
             {
                 string winner = isPlayer1Turn ? "Player 1" : "Player 2"; // Before toggling the turn
                 MessageBox.Show($"{winner} is the winner for this round");
                 if (isPlayer1Turn) player1Wins++; else player2Wins++;
-                rounds++;
                 InitializeGame();
+                UpdateUI(); // Update UI after initializing the game
                 return; // Stop further execution
             }
             else if (CheckForDraw())
             {
                 MessageBox.Show("It is a draw this round");
-                rounds++;
                 InitializeGame();
+                UpdateUI(); // Update UI after initializing the game
                 return; // Stop further execution
             }
 
@@ -97,8 +100,6 @@ namespace TicTacToe
 
             UpdateUI();
         }
-
-
 
         private void buttonNewGame_Click(object sender, EventArgs e)
         {
@@ -178,7 +179,6 @@ namespace TicTacToe
                     return true;
                 }
             }
-
             // Check anti-diagonal
             if (grid[0, gridSize - 1]?.Tag != null)
             {
@@ -196,10 +196,8 @@ namespace TicTacToe
                     return true;
                 }
             }
-
             return false;
         }
-
 
         private bool CheckForDraw()
         {
@@ -224,6 +222,22 @@ namespace TicTacToe
             labelPlayer1Wins.Text = $"{player1Wins}";
             labelPlayer2Wins.Text = $"{player2Wins}";
 
+            // Determine which picture to show based on the number of wins
+            if (player1Wins > player2Wins)
+            {
+                pictureP1Win.Visible = true;
+                pictureP2Win.Visible = false;
+            }
+            else if (player2Wins > player1Wins)
+            {
+                pictureP1Win.Visible = false;
+                pictureP2Win.Visible = true;
+            }
+            else
+            {
+                pictureP1Win.Visible = false;
+                pictureP2Win.Visible = false;
+            }
         }
         #region Unused Event Handlers
         private void pictureP1Win_Click(object sender, EventArgs e) { }
