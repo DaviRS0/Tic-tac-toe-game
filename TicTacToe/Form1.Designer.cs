@@ -46,6 +46,7 @@ namespace TicTacToe
             pictureP2Win = new PictureBox();
             pictureBox26 = new PictureBox();
             labelCurrentTurn = new Label();
+            panel1 = new Panel();
             ((System.ComponentModel.ISupportInitialize)pictureBox).BeginInit();
             grpboxP1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureP1Win).BeginInit();
@@ -53,6 +54,7 @@ namespace TicTacToe
             grpboxP2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureP2Win).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox26).BeginInit();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // comboBoxGridSize
@@ -83,15 +85,15 @@ namespace TicTacToe
             buttonExit.TabIndex = 3;
             buttonExit.Text = "Exit";
             buttonExit.UseVisualStyleBackColor = true;
-            buttonExit.Click += buttonExit_Click;
             // 
             // pictureBox
             // 
-            pictureBox.Location = new Point(70, 308);
+            pictureBox.Location = new Point(14, 18);
             pictureBox.Name = "pictureBox";
-            pictureBox.Size = new Size(186, 71);
+            pictureBox.Size = new Size(307, 283);
             pictureBox.TabIndex = 4;
             pictureBox.TabStop = false;
+            pictureBox.Visible = false;
             // 
             // labelRounds
             // 
@@ -228,11 +230,21 @@ namespace TicTacToe
             labelCurrentTurn.Text = "Current turn";
             labelCurrentTurn.Click += labelCurrentTurn_Click;
             // 
+            // panel1
+            // 
+            panel1.Controls.Add(pictureBox);
+            panel1.Location = new Point(12, 12);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(337, 343);
+            panel1.TabIndex = 36;
+            panel1.Visible = false;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(628, 450);
+            Controls.Add(panel1);
             Controls.Add(labelCurrentTurn);
             Controls.Add(grpboxP2);
             Controls.Add(grpboxP1);
@@ -240,7 +252,6 @@ namespace TicTacToe
             Controls.Add(lblGrid);
             Controls.Add(lblRound);
             Controls.Add(labelRounds);
-            Controls.Add(pictureBox);
             Controls.Add(buttonExit);
             Controls.Add(buttonNewGame);
             Controls.Add(comboBoxGridSize);
@@ -256,6 +267,7 @@ namespace TicTacToe
             grpboxP2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureP2Win).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox26).EndInit();
+            panel1.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -284,5 +296,6 @@ namespace TicTacToe
         private Label labelPlayer1Wins;
         private Label labelPlayer2Wins;
         private Label labelCurrentTurn;
+        private Panel panel1;
     }
 }

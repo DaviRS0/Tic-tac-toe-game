@@ -7,11 +7,12 @@ namespace TicTacToe
         private int player1Wins = 0;
         private int player2Wins = 0;
         private bool isPlayer1Turn = true;
-        private PictureBox[,] grid;
+        private PictureBox[,]? grid; // Declare grid as nullable
 
         public Form1()
         {
             InitializeComponent();
+            this.Text = "Group#_LastName1_LastName2";
             comboBoxGridSize.SelectedIndex = 0; // Set default grid size to 3x3
             InitializeGame();
         }
@@ -55,32 +56,49 @@ namespace TicTacToe
             UpdateUI();
         }
 
-        private void pictureBox_Click(object sender, EventArgs e)
+        private void pictureBox_Click(object? sender, EventArgs e)
         {
-            PictureBox pictureBox = sender as PictureBox;
+            if (sender is not PictureBox pictureBox) return; // Ensure sender is a PictureBox
+
             if (pictureBox.Image != null) return; // Cell already occupied
 
-            pictureBox.Image = isPlayer1Turn ? Properties.Resources.PlayerCircle : Properties.Resources.PlayerX;
-            isPlayer1Turn = !isPlayer1Turn;
+            // Assign the image and tag based on the current player's turn
+            if (isPlayer1Turn)
+            {
+                pictureBox.Image = Properties.Resources.PlayerCircle;
+                pictureBox.Tag = "Player1"; // Assign Player 1 tag
+            }
+            else
+            {
+                pictureBox.Image = Properties.Resources.PlayerX;
+                pictureBox.Tag = "Player2"; // Assign Player 2 tag
+            }
 
             // Check for winner or draw
             if (CheckForWinner())
             {
-                string winner = isPlayer1Turn ? "Player 2" : "Player 1";
+                string winner = isPlayer1Turn ? "Player 1" : "Player 2"; // Before toggling the turn
                 MessageBox.Show($"{winner} is the winner for this round");
-                if (isPlayer1Turn) player2Wins++; else player1Wins++;
+                if (isPlayer1Turn) player1Wins++; else player2Wins++;
                 rounds++;
                 InitializeGame();
+                return; // Stop further execution
             }
             else if (CheckForDraw())
             {
                 MessageBox.Show("It is a draw this round");
                 rounds++;
                 InitializeGame();
+                return; // Stop further execution
             }
+
+            // Toggle the player's turn after checking for the winner
+            isPlayer1Turn = !isPlayer1Turn;
 
             UpdateUI();
         }
+
+
 
         private void buttonNewGame_Click(object sender, EventArgs e)
         {
@@ -99,65 +117,89 @@ namespace TicTacToe
             UpdateUI();
         }
 
-        // FIX THE LOGIC BEHIND THIS FUNCTION
         private bool CheckForWinner()
         {
             // Check rows
             for (int i = 0; i < gridSize; i++)
             {
-                bool rowWin = true;
-                for (int j = 1; j < gridSize; j++)
+                if (grid[i, 0]?.Tag != null)
                 {
-                    if (grid[i, j].Image == null || !grid[i, j].Image.Equals(grid[i, j - 1].Image))
+                    bool rowWin = true;
+                    for (int j = 1; j < gridSize; j++)
                     {
-                        rowWin = false;
-                        break;
+                        if (grid[i, j]?.Tag == null || !grid[i, j].Tag.Equals(grid[i, j - 1]?.Tag))
+                        {
+                            rowWin = false;
+                            break;
+                        }
+                    }
+                    if (rowWin)
+                    {
+                        return true;
                     }
                 }
-                if (rowWin && grid[i, 0].Image != null) return true;
             }
 
             // Check columns
             for (int i = 0; i < gridSize; i++)
             {
-                bool colWin = true;
-                for (int j = 1; j < gridSize; j++)
+                if (grid[0, i]?.Tag != null)
                 {
-                    if (grid[j, i].Image == null || !grid[j, i].Image.Equals(grid[j - 1, i].Image))
+                    bool colWin = true;
+                    for (int j = 1; j < gridSize; j++)
                     {
-                        colWin = false;
-                        break;
+                        if (grid[j, i]?.Tag == null || !grid[j, i].Tag.Equals(grid[j - 1, i]?.Tag))
+                        {
+                            colWin = false;
+                            break;
+                        }
+                    }
+                    if (colWin)
+                    {
+                        return true;
                     }
                 }
-                if (colWin && grid[0, i].Image != null) return true;
             }
 
             // Check main diagonal
-            bool mainDiagonalWin = true;
-            for (int i = 1; i < gridSize; i++)
+            if (grid[0, 0]?.Tag != null)
             {
-                if (grid[i, i].Image == null || !grid[i, i].Image.Equals(grid[i - 1, i - 1].Image))
+                bool mainDiagonalWin = true;
+                for (int i = 1; i < gridSize; i++)
                 {
-                    mainDiagonalWin = false;
-                    break;
+                    if (grid[i, i]?.Tag == null || !grid[i, i].Tag.Equals(grid[i - 1, i - 1]?.Tag))
+                    {
+                        mainDiagonalWin = false;
+                        break;
+                    }
+                }
+                if (mainDiagonalWin)
+                {
+                    return true;
                 }
             }
-            if (mainDiagonalWin && grid[0, 0].Image != null) return true;
 
             // Check anti-diagonal
-            bool antiDiagonalWin = true;
-            for (int i = 1; i < gridSize; i++)
+            if (grid[0, gridSize - 1]?.Tag != null)
             {
-                if (grid[i, gridSize - i - 1].Image == null || !grid[i, gridSize - i - 1].Image.Equals(grid[i - 1, gridSize - i].Image))
+                bool antiDiagonalWin = true;
+                for (int i = 1; i < gridSize; i++)
                 {
-                    antiDiagonalWin = false;
-                    break;
+                    if (grid[i, gridSize - i - 1]?.Tag == null || !(grid[i, gridSize - i - 1]?.Tag?.Equals(grid[i - 1, gridSize - i]?.Tag) ?? false))
+                    {
+                        antiDiagonalWin = false;
+                        break;
+                    }
+                }
+                if (antiDiagonalWin)
+                {
+                    return true;
                 }
             }
-            if (antiDiagonalWin && grid[0, gridSize - 1].Image != null) return true;
 
             return false;
         }
+
 
         private bool CheckForDraw()
         {
@@ -165,7 +207,7 @@ namespace TicTacToe
             {
                 for (int j = 0; j < gridSize; j++)
                 {
-                    if (grid[i, j].Image == null)
+                    if (grid[i, j]!.Image == null)
                     {
                         return false; // If any cell is empty, it's not a draw
                     }
@@ -177,20 +219,12 @@ namespace TicTacToe
         private void UpdateUI()
         {
             // Update the label to show whose turn it is
-            labelCurrentTurn.Text = isPlayer1Turn ? "Player 1's Turn" : "Player 2's Turn";
-
-            // Update the labels to show the number of wins for each player
+            labelCurrentTurn.Text = isPlayer1Turn ? "Player 1's Turn (O)" : "Player 2's Turn (X)";
+            labelRounds.Text = $"Rounds: {rounds}";
             labelPlayer1Wins.Text = $"{player1Wins}";
             labelPlayer2Wins.Text = $"{player2Wins}";
 
-            // Update the label to show the number of rounds played
-            labelRounds.Text = $"Rounds: {rounds}";
         }
-        private void buttonExit_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
-
         #region Unused Event Handlers
         private void pictureP1Win_Click(object sender, EventArgs e) { }
         private void pictureP2Win_Click(object sender, EventArgs e) { }
